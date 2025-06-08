@@ -1,5 +1,7 @@
 
-![](resources\SHACLitLogo.png "SHACLit")
+<div style="text-align: center;">
+  <img src="resources/SHACLitLogo.png" alt="SHACLit" height="200"/>
+</div>
 
 # SHACLit - Shaping Constraints Limitlessly
 SHACLit is the go-to web app for engineers and data architects who need powerful tools to explore, design, and maintain SHACL-based constraints — all built on a flexible design concept. Built for SHACL experts, by SHACL experts, SHACLit supports complex standards like Europe’s Common Grid Model Exchange Standard (CGMES, IEC 61970-600) and adapts seamlessly across multiple industries, including energy and utilities, healthcare data integration, finance and compliance, and linked data management in research and government.
