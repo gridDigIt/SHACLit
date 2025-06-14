@@ -1,0 +1,252 @@
+@base   <https://griddigit.eu/SHACLit-Template/1.0> .
+@prefix temp:    <https://griddigit.eu/SHACLit-Template/1.0#> .
+@prefix cim:   <https://cim.ucaiug.io/ns#> .
+@prefix cim16: <http://iec.ch/TC57/2013/CIM-schema-cim16#> .
+@prefix cim17: <http://iec.ch/TC57/CIM100#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix dcterms:   <http://purl.org/dc/terms/> .
+@prefix dm:    <http://iec.ch/TC57/61970-552/DifferenceModel/1#> .
+@prefix md:    <http://iec.ch/TC57/61970-552/ModelDescription/1#> .
+@prefix nc:    <https://cim4.eu/ns/nc#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+temp:Ontology  rdf:type     owl:Ontology;
+        dcterms:conformsTo    "file://ABC.eap" , "urn:iso:std:iec:61970-501:draft:ed-2" , "urn:iso:std:iec:61970-600-2:ed-1" , "urn:iso:std:iec:61970-301:ed-7:amd1" , "urn:iso:std:iec:61970-401:draft:ed-1";
+        dcterms:description   "Describing SHACL constraints templates that can be used in SHACLit.";
+        dcterms:identifier    "urn:uuid:4b11094e-134a-4d56-8dcb-4e3f912ee230";
+        dcterms:issued        "2025-06-11T18:33:46.115149700"^^xsd:dateTime;
+        dcterms:language      "en-GB";
+        dcterms:license       "https://www.apache.org/licenses/LICENSE-2.0"@en;
+        dcterms:modified      "2025-06-11"^^xsd:date;
+        dcterms:publisher     "gridDigIt"@en;
+        dcterms:rightsHolder  "gridDigIt"@en;
+        dcterms:title         "Template constraints"@en;
+        owl:versionIRI    <https://griddigit.eu/SHACLit-Template/1.0>;
+        owl:versionInfo   "1.0.0"@en;
+        dcat:keyword      "Template";
+        dcat:theme        "constraint"@en .
+
+
+temp:     rdf:type     owl:Ontology;
+        sh:declare   [ rdf:type      sh:PrefixDeclaration;
+                       sh:namespace  "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+                       sh:prefix     "rdf"
+                     ] .
+
+temp:ProfileClassesGroup
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "ProfileClasses";
+        sh:order    0 .
+
+temp:AllowedClasses-node
+        rdf:type             sh:NodeShape;
+        sh:property          temp:AllowedClasses-property;
+        sh:targetSubjectsOf  rdf:type .
+		
+temp:AllowedClasses-property
+        rdf:type        sh:PropertyShape;
+        sh:description  "Checks if the dataset contains classes which are not defined in the profile to which this dataset conforms to.";
+        sh:group        temp:ProfileClassesGroup;
+        sh:in           ( cim:ClassA cim:ClassB md:FullModel dm:DifferenceModel dcat:Dataset );
+        sh:message      "This class is not part of the profile to which this dataset conforms to.";
+        sh:name         "ClassNotInProfile";
+        sh:order        1;
+        sh:path         rdf:type;
+        sh:severity     sh:Info .
+		
+temp:ClassesCountGroup  rdf:type  sh:PropertyGroup;
+        rdfs:label  "ClassesCount";
+        sh:order    1 .		
+		
+temp:ClassCount-node  rdf:type  sh:NodeShape;
+        sh:property    temp:ClassCount-property;
+        sh:targetNode  temp:ClassCount .		
+		
+temp:ClassCount-property
+        rdf:type        sh:PropertyShape;
+        sh:description  "Counts instance of classes present in the data graph.";
+        sh:group        temp:ClassesCountGroup;
+        sh:name         "ClassCount";
+        sh:order        1;
+        sh:path         rdf:type;
+        sh:severity     sh:Info;
+        sh:sparql       temp:ClassCount-propertySparql .	
+
+temp:ClassCount-propertySparql
+        rdf:type     sh:SPARQLConstraint;
+        sh:message   "The class {?class} appears {?value} times in the data graph.";
+        sh:prefixes  temp:;
+        sh:select    """ 
+            SELECT $this ?class (COUNT(?instance) AS ?value)
+            WHERE {
+                    ?instance rdf:type ?class .
+                   }
+            GROUP BY $this ?class
+             """ .
+
+temp:ProfilePropertiesGroup
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "ProfileProperties";
+        sh:order    2 .	
+		
+		
+temp:ClassA-AllowedProperties
+        rdf:type              sh:NodeShape;
+        sh:closed             true;
+        sh:description        "Checks if the dataset contains properties which are not defined in the profile to which this dataset conforms to.";
+        sh:group              temp:ProfilePropertiesGroup;
+        sh:ignoredProperties  ( rdf:type );
+        sh:message            "This property is not part of the profile to which this dataset conforms to.";
+        sh:name               "PropertyNotInProfile";
+        sh:order              3;
+        sh:property           [ sh:path  cim:ClassA.attribute1 ];
+        sh:property           [ sh:path  cim:ClassA.attribute2 ];
+        sh:property           [ sh:path  cim:ClassA.attribute3 ];
+        sh:property           [ sh:path  cim:ClassA.attribute4 ];
+        sh:property           [ sh:path  cim:ClassA.attribute5 ];
+        sh:severity           sh:Info;
+        sh:targetClass        cim:ClassA .	
+
+temp:AssociationsGroup  rdf:type  sh:PropertyGroup;
+        rdfs:label  "Associations";
+        sh:order    3 .
+
+temp:InverseAssociationsGroup
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "InverseAssociations";
+        sh:order    4 .
+
+temp:DatatypesGroup  rdf:type  sh:PropertyGroup;
+        rdfs:label  "Datatypes";
+        sh:order    5 .
+
+
+temp:CardinalityGroup  rdf:type  sh:PropertyGroup;
+        rdfs:label  "Cardinality";
+        sh:order    6 .		
+		
+temp:CrossBorderRelevance
+        rdf:type        sh:NodeShape;
+        sh:property     temp:ClassX.AssociationA-valueType , temp:ClassX.AssociationA-cardinality , temp:ClassX.attributeA-datatype , temp:ClassX.attributeA-cardinality , temp:ClassX.attributeH-datatype;
+        sh:targetClass  cim:ClassX .		
+
+temp:ClassX.AssociationA-valueType
+        rdf:type        sh:PropertyShape;
+        sh:class        cim:ClassX;
+        sh:description  "This constraint validates the value of the association at the used direction.";
+        sh:group        temp:AssociationsGroup;
+        sh:message      "One of the following does not conform: 1) The value shall be IRI; 2) The value shall be an instance of the class: cim:ClassA";
+        sh:name         "ClassX.AssociationA-valueType";
+        sh:nodeKind     sh:IRI;
+        sh:order        16;
+        sh:path         cim:ClassX.AssociationA;
+        sh:severity     sh:Violation .
+
+temp:ClassX.AssociationA-cardinality
+        rdf:type        sh:PropertyShape;
+        sh:description  "This constraint validates the cardinality of the association at the used direction.";
+        sh:group        temp:CardinalityGroup;
+        sh:maxCount     1;
+		sh:minCount     1;
+        sh:message      "Cardinality violation. Upper bound shall be 1";
+        sh:name         "ClassX.AssociationA-cardinality";
+        sh:order        52;
+        sh:path         cim:ClassX.AssociationA;
+        sh:severity     sh:Violation .
+
+temp:ClassX.attributeA-datatype
+        rdf:type        sh:PropertyShape;
+        sh:datatype     xsd:string;
+        sh:description  "This constraint validates the datatype of the property (attribute).";
+        sh:group        temp:DatatypesGroup;
+        sh:message      "The datatype is not literal or it violates the xsd datatype.";
+        sh:name         "ClassX.attributeA-datatype";
+        sh:nodeKind     sh:Literal;
+        sh:order        31;
+        sh:path         cim:ClassX.attributeA;
+        sh:severity     sh:Violation .
+
+temp:ClassX.attributeA-cardinality
+        rdf:type        sh:PropertyShape;
+        sh:description  "This constraint validates the cardinality of the property (attribute).";
+        sh:group        temp:CardinalityGroup;
+        sh:maxCount     1;
+        sh:message      "Missing required property (attribute).";
+        sh:minCount     1;
+        sh:name         "ClassX.attributeA-cardinality";
+        sh:order        50;
+        sh:path         cim:ClassX.attributeA;
+        sh:severity     sh:Violation .
+
+temp:ClassX.AssociationB-inverseNodePresent
+        rdf:type             sh:NodeShape;
+        sh:property          temp:ClassX.AssociationB-propertyInverse;
+        sh:targetSubjectsOf  cim:ClassX.AssociationB .
+		
+temp:ClassX.AssociationB-propertyInverse
+        rdf:type        sh:PropertyShape;
+        sh:description  "Inverse associations shall not be instantiated.";
+        sh:group        temp:InverseAssociationsGroup;
+        sh:maxCount     0;
+        sh:message      "Inverse association is present.";
+        sh:name         "InverseAssociationPresent";
+        sh:order        3;
+        sh:path         cim:ClassX.AssociationB;
+        sh:severity     sh:Violation .
+
+temp:ClassY.AssociationA-valueTypeNodeShape
+        rdf:type        sh:NodeShape;
+        sh:property     temp:ClassY.AssociationA-valueType;
+        sh:targetClass  cim:ClassY .
+		
+temp:ClassY.AssociationA-valueType
+        rdf:type        sh:PropertyShape;
+        sh:description  "This constraint validates the value of the association at the used direction.";
+        sh:group        temp:AssociationsGroup;
+        sh:in           ( cim:ClassK cim:ClassL cim:ClassM );
+        sh:message      "One of the following occurs: 1) The value is not IRI; 2) The value is not the right class.";
+        sh:name         "ClassY.AssociationA-valueType";
+        sh:nodeKind     sh:IRI;
+        sh:order        13;
+        sh:path         ( cim:ClassY.AssociationA rdf:type );
+        sh:severity     sh:Violation .
+
+temp:ClassX.attributeH-datatype
+        rdf:type        sh:PropertyShape;
+        sh:description  "This constraint validates the datatype of the property (attribute).";
+        sh:group        temp:DatatypesGroup;
+        sh:in           ( cim:Kind.enumA cim:Kind.enumB cim:Kind.enumC );
+        sh:message      "The datatype is not IRI (Internationalized Resource Identifier) or it is enumerated value not part of the profile.";
+        sh:name         "ClassX.attributeH-datatype";
+        sh:nodeKind     sh:IRI;
+        sh:order        8;
+        sh:path         cim:ClassX.attributeH;
+        sh:severity     sh:Violation .
+
+
+temp:ClassV.AssociationF-valueType
+        rdf:type        sh:PropertyShape;
+        sh:description  "This constraint validates the value of the association at the used direction.";
+        sh:group        temp:AssociationsGroup;
+        sh:in           ( cim16:ClassA cim17:ClassA cim16:ClassB cim17:ClassB cim:ClassA cim:ClassB );
+        sh:message      "One of the following occurs: 1) The value is not IRI; 2) The value is not the right class.";
+        sh:name         "ClassV.AssociationF-valueType";
+        sh:nodeKind     sh:IRI;
+        sh:order        8;
+        sh:path         ( cim:ClassV.AssociationF rdf:type );
+        sh:severity     sh:Violation .
+
+temp:ClassV.AssociationF-valueTypeNodeShape
+        rdf:type        sh:NodeShape;
+        sh:property     temp:ClassV.AssociationF-valueType;
+        sh:targetClass  cim:ClassV .
+
+
+
+
+
+
